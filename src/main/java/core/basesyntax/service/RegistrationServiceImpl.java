@@ -34,7 +34,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
 
         if (user.getAge() < MIN_AGE) {
-            throw new InvalidUserData("User age must be at least 18");
+            throw new InvalidUserData("Age must be at least 18 years old");
         }
 
         if (storageDao.get(user.getLogin()) != null) {
