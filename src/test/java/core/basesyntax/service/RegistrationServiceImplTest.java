@@ -13,7 +13,10 @@ class RegistrationServiceImplTest {
     private static User validUser;
     private static final String EMPTY_STRING = "";
     private static final String VALID_PASSWORD = "password";
+    private static final String MIN_VALID_PASSWORD = "pass12";
     private static final String VALID_LOGIN = "user_login";
+    private static final String MIN_VALID_LOGIN = "user12";
+    private static final int MIN_AGE = 18;
     private static final int VALID_AGE = 18;
     private static final String INVALID_PASSWORD_OR_LOGIN1 = "p";
     private static final String INVALID_PASSWORD_OR_LOGIN2 = "pa";
@@ -74,6 +77,22 @@ class RegistrationServiceImplTest {
     }
 
     @Test
+    void register_minValidLogin_Ok() {
+        validUser.setLogin(MIN_VALID_LOGIN);
+        String actual = service.register(validUser).getLogin();
+        String expected = MIN_VALID_LOGIN;
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void register_validLogin_Ok() {
+        validUser.setLogin(VALID_LOGIN);
+        String actual = service.register(validUser).getLogin();
+        String expected = VALID_LOGIN;
+        assertEquals(expected, actual);
+    }
+
+    @Test
     void register_passwordNull_notOk() {
         validUser.setPassword(null);
         assertThrows(InvalidUserData.class, () -> service.register(validUser));
@@ -109,6 +128,22 @@ class RegistrationServiceImplTest {
     }
 
     @Test
+    void register_minValidPasswordOk() {
+        validUser.setPassword(MIN_VALID_PASSWORD);
+        String actual = service.register(validUser).getPassword();
+        String expected = MIN_VALID_PASSWORD;
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void register_validPassword_Ok() {
+        validUser.setPassword(VALID_PASSWORD);
+        String actual = service.register(validUser).getPassword();
+        String expected = VALID_PASSWORD;
+        assertEquals(expected, actual);
+    }
+
+    @Test
     void register_ageNull_notOk() {
         validUser.setAge(null);
         assertThrows(InvalidUserData.class, () -> service.register(validUser));
@@ -128,6 +163,22 @@ class RegistrationServiceImplTest {
         assertThrows(InvalidUserData.class, () -> service.register(validUser),
                 errorDescription + ageUnder18 + ". Age must be at least 18 years old");
 
+    }
+
+    @Test
+    void register_minValidAgeOk() {
+        validUser.setAge(MIN_AGE);
+        int actual = service.register(validUser).getAge();
+        int expected = MIN_AGE;
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void register_validAge_Ok() {
+        validUser.setAge(VALID_AGE);
+        int actual = service.register(validUser).getAge();
+        int expected = VALID_AGE;
+        assertEquals(expected, actual);
     }
 
     @Test
