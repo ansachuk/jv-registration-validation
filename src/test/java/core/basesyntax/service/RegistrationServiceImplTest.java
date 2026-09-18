@@ -1,17 +1,15 @@
 package core.basesyntax.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import core.basesyntax.dao.StorageDao;
-import core.basesyntax.dao.StorageDaoImpl;
+import core.basesyntax.db.Storage;
 import core.basesyntax.model.User;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class RegistrationServiceImplTest {
-    private static StorageDao storage;
     private static RegistrationServiceImpl service;
     private static User validUser;
     private static final String EMPTY_STRING = "";
@@ -26,14 +24,10 @@ class RegistrationServiceImplTest {
     private static final String ERROR_MESSAGE_TEMPLATE = "Storage must have been rejected"
             + " adding user with ";
 
-    @BeforeAll
-    static void beforeAll() {
-        service = new RegistrationServiceImpl();
-    }
-
     @BeforeEach
     void setUp() {
-        storage = new StorageDaoImpl();
+        Storage.people.clear();
+        service = new RegistrationServiceImpl();
         validUser = new User();
         validUser.setLogin(VALID_LOGIN);
         validUser.setPassword(VALID_PASSWORD);
@@ -174,9 +168,16 @@ class RegistrationServiceImplTest {
     }
 
     @Test
+    void register_validUserHasID_ok() {
+        User newUser = service.register(validUser);
+        assertNotNull(newUser.getId(),
+                "User must have ID");
+    }
+
+    @Test
     void register_validUser_ok() {
-        service.register(validUser);
-        assertEquals(validUser, storage.get(validUser.getLogin()),
+        User newUser = service.register(validUser);
+        assertEquals(validUser, newUser,
                 "Added user and user in storage are not equal");
     }
 }
