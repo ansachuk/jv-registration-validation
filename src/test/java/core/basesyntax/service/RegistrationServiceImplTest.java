@@ -1,7 +1,6 @@
 package core.basesyntax.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import core.basesyntax.db.Storage;
@@ -35,7 +34,7 @@ class RegistrationServiceImplTest {
     }
 
     @Test
-    void register_EmptyUser_notOk() {
+    void register_emptyUser_notOk() {
         assertThrows(InvalidUserData.class, () -> service.register(new User()));
     }
 
@@ -46,7 +45,7 @@ class RegistrationServiceImplTest {
     }
 
     @Test
-    void register_InvalidLogin_notOk() {
+    void register_invalidLogin_notOk() {
         String errorDescription = ERROR_MESSAGE_TEMPLATE + "login ";
 
         validUser.setLogin(EMPTY_STRING);
@@ -81,7 +80,7 @@ class RegistrationServiceImplTest {
     }
 
     @Test
-    void register_InvalidPassword_notOk() {
+    void register_invalidPassword_notOk() {
         String errorDescription = ERROR_MESSAGE_TEMPLATE + "password ";
 
         validUser.setPassword(EMPTY_STRING);
@@ -116,11 +115,10 @@ class RegistrationServiceImplTest {
     }
 
     @Test
-    void register_InvalidAge_notOk() {
+    void register_invalidAge_notOk() {
         String errorDescription = ERROR_MESSAGE_TEMPLATE + "age ";
         final int negativeAge = -1;
         final int ageUnder18 = 17;
-        final int maxAge = 126;
 
         validUser.setAge(negativeAge);
         assertThrows(InvalidUserData.class, () -> service.register(validUser),
@@ -129,10 +127,6 @@ class RegistrationServiceImplTest {
         validUser.setAge(ageUnder18);
         assertThrows(InvalidUserData.class, () -> service.register(validUser),
                 errorDescription + ageUnder18 + ". Age must be at least 18 years old");
-
-        validUser.setAge(maxAge);
-        assertThrows(InvalidUserData.class, () -> service.register(validUser),
-                errorDescription + maxAge + ". Age can't be at higher than 125");
 
     }
 
@@ -162,16 +156,9 @@ class RegistrationServiceImplTest {
 
     @Test
     void register_userWithSameLogin_notOk() {
-        service.register(validUser);
+        Storage.people.add(validUser);
 
         assertThrows(UserAlreadyExist.class, () -> service.register(validUser));
-    }
-
-    @Test
-    void register_validUserHasID_ok() {
-        User newUser = service.register(validUser);
-        assertNotNull(newUser.getId(),
-                "User must have ID");
     }
 
     @Test

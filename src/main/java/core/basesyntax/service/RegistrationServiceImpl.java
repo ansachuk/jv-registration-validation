@@ -30,10 +30,6 @@ public class RegistrationServiceImpl implements RegistrationService {
             throw new InvalidUserData("User age must be at least 18");
         }
 
-        if (user.getAge() > 125) {
-            throw new InvalidUserData("User age must be under 125");
-        }
-
         if (storageDao.get(user.getLogin()) != null) {
             throw new UserAlreadyExist("User with this login already exist");
         }
